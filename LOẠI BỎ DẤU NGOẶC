@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+using namespace std;
+string s;
+int n;
+map<string,bool>ans;
+int canxoamin(string s){
+    stack<char> st;
+    for(auto x : s){
+        if(x=='(')st.push(x);
+        else if(x == ')'){
+            if(!st.size() || st.top() ==')')st.push(')');
+            else st.pop();
+        }
+    }
+    return (int)st.size();
+}
+void back(int i,string res, int duocphepxoa ,stack<char>st ,int restngoacdong ){
+    if(i== n && !st.size() && res.size() > 1 ){
+        ans[res] = true;
+        return;
+    }
+    if(st.size() > restngoacdong)return;
+    if(duocphepxoa)back(i +1 , res , duocphepxoa - 1 , st,restngoacdong);
+    if(s[i] == '(')st.push(s[i]) , back(i+1 ,res+"(",duocphepxoa,st,restngoacdong);
+    else if(isalpha(s[i]))back(i+1 ,res+string(1,s[i]),duocphepxoa,st,restngoacdong);
+    else if( s[i] == ')'){
+        if(st.size() && st.top() == '(')st.pop() ,back(i+1 ,res+")",duocphepxoa,st,restngoacdong-1);;
+    }
+}
+void solve(){
+    ans.clear();
+    cin >> s;
+    n = s.size();
+    int duocphepxoa = canxoamin(s);
+    int restngoacdong = 0;
+    for(auto x : s)if(x ==')')restngoacdong++;
+    stack<char>st;
+    back(0, "", duocphepxoa , st , restngoacdong);
+    if(!ans.size())cout<<-1;
+    else for(auto x :ans)cout<<x.first<<" ";
+    cout<<endl;
+}
+int main() {
+    ios_base::sync_with_stdio(0); cin.tie(NULL); cout.tie(NULL);
+    int t;
+    cin >> t;
+    while(t--)solve();
+}
